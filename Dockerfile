@@ -1,19 +1,21 @@
-# FROM python:3.7.4-slim
-FROM continuumio/miniconda3:4.7.10
+FROM continuumio/miniconda3:24.1.2-0
 LABEL maintainer="Syed Salman Qadri <syed.qadri@seeloz.com>"
 
 WORKDIR /mlflow/
 
-ARG MLFLOW_VERSION=1.2.0
-RUN mkdir -p /mlflow/ \
-  && apt-get update && apt-get -y install --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential \
-  && pip install \
-    mlflow==$MLFLOW_VERSION \
-    sqlalchemy \
-    boto3 \
-    google-cloud-storage \
-    psycopg2 \
-    mysql
+ARG MLFLOW_VERSION=2.11.1
+RUN mkdir -p /mlflow/
+RUN apt update
+RUN apt upgrade
+RUN apt install -y --no-install-recommends default-libmysqlclient-dev libpq-dev build-essential
+RUN conda update --all
+RUN pip install --upgrade pip
+RUN conda install mlflow==$MLFLOW_VERSION -c conda-forge
+RUN conda install sqlalchemy
+RUN conda install boto3 -c conda-forge
+RUN conda install google-cloud-storage -c conda-forge
+RUN conda install psycopg2 -c conda-forge
+RUN conda install mysql -c conda-forge
 
 EXPOSE 5000
 
